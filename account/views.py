@@ -1,36 +1,13 @@
-from django.shortcuts import render
-from django.http import HttpResponse
-from django.contrib.auth import authenticate, login
+from django.shortcuts import render, get_object_or_404
 from .forms import UserRegistrationForm, UserEditForm, ProfileEditForm
 from django.contrib.auth.decorators import login_required
 from .models import Profile
 from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist
+from django.contrib.auth.models import User
+from django.core.paginator import Paginator
 
-# Create your views here.
-# tried to understand @login_required decorator
 
-# def user_login(request):
-#     if not request.user.is_authenticated:
-#         if request.method == 'POST':
-#             form = LoginForm(request.POST)
-#             if form.is_valid():
-#                 cd = form.cleaned_data
-#                 user = authenticate(request, username=cd['username'],
-#                                     password=cd['password'])
-#                 if user is not None:
-#                     if user.is_active:
-#                         login(request, user)
-#                         return render(request, 'account/dashboard.html', {'section': 'dashboard'})
-#                     else:
-#                         return HttpResponse('Disabled account/session expired')
-#                 else:
-#                     return HttpResponse('Invalid login')
-#         else:
-#             form = LoginForm()
-#         return render(request, 'registration/login.html', {'form': form})
-#     else:
-#         return render(request, 'account/dashboard.html', {'section': 'dashboard'})
 @login_required
 def dashboard(request):
     return render(request, 'account/dashboard.html', {'section': 'dashboard'})
@@ -74,3 +51,22 @@ def edit(request):
 
 
     return render(request, 'account/edit.html', {'user_form': user_form, 'profile_form': profile_form})
+
+
+@login_required
+def user_list(request):
+    users = User.objects.filter(is_active=True)
+    paginator = Paginator(users,3)
+    page_number = request.GET.get('page')
+    users = paginator.get_page(page_number)
+    return render(request, 'account/user/list.html', {'section': 'People',
+                                                      'users': users})
+
+@login_required
+def user_details(request, username):
+    user = get_object_or_404(User, username=username, is_active= True)
+    return render(request, 'account/user/details.html', {'section': 'people',
+                                                         'user': user})
+
+
+

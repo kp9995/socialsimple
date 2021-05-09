@@ -7,7 +7,7 @@ from .forms import ImageCreateForm
 from .models import Image
 from common.decorators import ajax_required
 from django.core.paginator import PageNotAnInteger, EmptyPage, Paginator
-# Create your views here.
+
 
 
 @login_required

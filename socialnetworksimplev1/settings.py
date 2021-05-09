@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 
 from pathlib import Path
 import os
+from django.urls import reverse_lazy
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -44,6 +45,7 @@ INSTALLED_APPS = [
     'django_extensions',
     'images.apps.ImagesConfig',
     'easy_thumbnails',
+  #  "keystrokedynamics.apps.KeystrokedynamicsConfig"
 ]
 
 MIDDLEWARE = [
@@ -141,6 +143,11 @@ AUTHENTICATION_BACKENDS = [
     'social_core.backends.facebook.FacebookOAuth2',
 ]
 
-SOCIAL_AUTH_FACEBOOK_KEY=''
-SOCIAL_AUTH_FACEBOOK_SECRET = ""
+SOCIAL_AUTH_FACEBOOK_KEY='1527217384141629'
+SOCIAL_AUTH_FACEBOOK_SECRET = "374b16408d36c00df1f0a9a546e5877a"
 SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
+
+
+ABSOLUTE_URL_OVERRIDES={
+    'auth.user': lambda u:reverse_lazy('user_details',args=[u.username])
+}
